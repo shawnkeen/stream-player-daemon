@@ -1,0 +1,47 @@
+#!/bin/bash
+
+function get_volume() {
+	amixer -c 0 get Master | grep % | grep -o "Playback [0-9]*" | cut -d " " -f 2
+}
+
+function change_vol() {
+	amixer -c 0 -q set Master $1
+}
+
+if [[ -z $1 ]]
+then
+	get_volume
+	exit 0
+fi
+
+case "$1" in
+	inc)
+		curr_vol=$(get_volume)
+		if [ "$curr_vol" == "0" ]
+		then
+			amixer -c 0 -q set Master 3
+			amixer -c 0 -q set Master unmute
+		else
+			if [[ -n $2 ]]
+			then
+				change_vol $2%+
+			else
+				change_vol 1%+
+			fi
+		fi
+		;;
+	dec)
+		if [[ -n $2 ]]
+		then
+			change_vol $2%-
+		else
+			change_vol 1%-
+		fi
+		;;
+	set)
+		if [[ -n $2 ]]
+		then
+			change_vol $2
+		fi
+		;;
+esac

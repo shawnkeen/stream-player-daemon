@@ -1,0 +1,104 @@
+package main
+
+import (
+	"github.com/alyu/configparser"
+	"log"
+	"strings"
+)
+
+type Config struct {
+	runDir            string
+	playerCmd         string
+	stations          []Station
+	stationNames      []string
+	availableStations map[string]Station
+}
+
+var runDir string
+var config Config
+
+func init() {
+	config.readFromFile("config")
+	runDir = config.runDir
+
+	log.Printf("Loaded config with %d stations available and %d set.", len(config.availableStations), len(config.stations))
+}
+
+func (c *Config) readFromFile(filePath string) error {
+	config, err := configparser.Read(filePath)
+	if err != nil {
+		return err
+	}
+
+	section, err := config.Section("Global")
+	if err != nil {
+		return err
+	}
+
+	c.playerCmd = section.Options()["player"]
+	c.runDir = section.Options()["dir"]
+	//c.stationNames = []string{"dummy"}
+	c.stationNames = append([]string{"dummy"}, strings.Split(section.Options()["stations"], " ")...)
+
+	sections, _ := config.AllSections()
+	c.availableStations = make(map[string]Station)
+	for _, sec := range sections {
+		if sec.Exists("name") && sec.Exists("url") {
+			c.availableStations[sec.Name()] = Station{Name: sec.Options()["name"], URL: sec.Options()["url"]}
+		}
+	}
+
+	c.stations = make([]Station, len(c.stationNames))
+	for i, shortName := range c.stationNames {
+		c.stations[i] = c.availableStations[shortName]
+	}
+
+	return nil
+}
+
+func main() {
+
+	// for name, station := range config.availableStations {
+	// 	println(name + " " + station.Name)
+	// }
+
+	println(-1 % 9)
+
+	status, err := readStatusFromFiles()
+	if err == nil {
+		println(status.String())
+	}
+
+	// for _, station := range config.stations {
+	// 	println(station.URL)
+	// }
+	//status := Status{0, 3, "playing", "Foo - Da Fight"}
+
+	// var stationsJSON = `[{"Name": "bytefm musik", "URL": "http://byte.fm/musikstream"}, {"Name": "detektorfm", "URL": "http://detektor.fm/stream"}]`
+
+	// stations, err := decodeStationsJSON(stationsJSON)
+
+	// if err != nil {
+	// 	println(err.Error())
+	// }
+
+	// for _, s := range stations {
+	// 	println("Name: " + s.Name)
+	// 	println("URL: " + s.URL)
+	// 	println("")
+	// }
+
+	// status := Status{Volume: 15, CurrStationID: 0, State: "playing"}
+
+	// println(status.String(stations))
+
+	// json, err := status.JSON()1
+	// if err == nil {
+	// 	println(string(json))
+	// } else {
+	// 	println(err.Error())
+	// }
+
+	startServer()
+	//client()
+}
