@@ -69,36 +69,6 @@ func main() {
 		println(status.String())
 	}
 
-	// for _, station := range config.stations {
-	// 	println(station.URL)
-	// }
-	//status := Status{0, 3, "playing", "Foo - Da Fight"}
-
-	// var stationsJSON = `[{"Name": "bytefm musik", "URL": "http://byte.fm/musikstream"}, {"Name": "detektorfm", "URL": "http://detektor.fm/stream"}]`
-
-	// stations, err := decodeStationsJSON(stationsJSON)
-
-	// if err != nil {
-	// 	println(err.Error())
-	// }
-
-	// for _, s := range stations {
-	// 	println("Name: " + s.Name)
-	// 	println("URL: " + s.URL)
-	// 	println("")
-	// }
-
-	// status := Status{Volume: 15, CurrStationID: 0, State: "playing"}
-
-	// println(status.String(stations))
-
-	// json, err := status.JSON()1
-	// if err == nil {
-	// 	println(string(json))
-	// } else {
-	// 	println(err.Error())
-	// }
-
 	startServer()
 	//client()
 }

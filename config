@@ -1,7 +1,7 @@
 [Global]
 
 stations = lounge detektorm bytefm fm4 digitalis fm4Alt dlf drk detektorw
-dir = /var/run/streams
+dir = var-run-streams
 player = ./play-stream.py
 
 [munich]
